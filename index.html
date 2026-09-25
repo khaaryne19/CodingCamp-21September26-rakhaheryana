@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Expense & Budget Visualizer</title>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+
+  <body>
+    <!-- ============================================================
+         HEADER
+    ============================================================ -->
+    <header class="header">
+      <h1 class="header__title">Expense & Budget Visualizer</h1>
+      <button id="theme-toggle" class="btn btn--icon" aria-label="Toggle dark/light mode">
+        <span id="theme-icon">🌙</span>
+      </button>
+    </header>
+
+    <main class="main">
+
+      <!-- ============================================================
+           SECTION 1: TOTAL BALANCE
+      ============================================================ -->
+      <section class="section section--balance" aria-label="Total balance">
+        <div class="balance-card">
+          <p class="balance-card__label">Total Pengeluaran</p>
+          <p id="total-balance" class="balance-card__amount">Rp 0</p>
+
+          <!-- Warning: muncul ketika total melebihi spending limit -->
+          <div id="spending-warning" class="balance-card__warning" hidden>
+            <span class="warning__icon">⚠️</span>
+            <span class="warning__text">Pengeluaran melebihi batas maksimal!</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           SECTION 2: SPENDING LIMIT
+      ============================================================ -->
+      <section class="section section--limit" aria-label="Spending limit">
+        <h2 class="section__title">Batas Pengeluaran</h2>
+        <div class="limit-form">
+          <label for="limit-input" class="limit-form__label">Batas Maksimal (Rp)</label>
+          <div class="limit-form__row">
+            <input
+              type="number"
+              id="limit-input"
+              class="input"
+              placeholder="Contoh: 500000"
+              min="0"
+            />
+            <button id="limit-save-btn" class="btn btn--secondary">Simpan</button>
+          </div>
+          <p id="limit-display" class="limit-form__display" hidden>
+            Limit aktif: <span id="limit-value">Rp 0</span>
+          </p>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           SECTION 3: INPUT FORM
+      ============================================================ -->
+      <section class="section section--form" aria-label="Add transaction form">
+        <h2 class="section__title">Tambah Pengeluaran</h2>
+        <form id="transaction-form" class="transaction-form" novalidate>
+
+          <div class="form-group">
+            <label for="item-name" class="form-group__label">Nama Item</label>
+            <input
+              type="text"
+              id="item-name"
+              class="input"
+              placeholder="Contoh: Makan siang"
+              required
+            />
+            <span class="form-group__error" id="item-name-error" hidden>Nama item wajib diisi.</span>
+          </div>
+
+          <div class="form-group">
+            <label for="item-amount" class="form-group__label">Jumlah (Rp)</label>
+            <input
+              type="number"
+              id="item-amount"
+              class="input"
+              placeholder="Contoh: 25000"
+              min="1"
+              required
+            />
+            <span class="form-group__error" id="item-amount-error" hidden>Jumlah wajib diisi dan lebih dari 0.</span>
+          </div>
+
+          <div class="form-group">
+            <label for="item-category" class="form-group__label">Kategori</label>
+            <select id="item-category" class="input input--select" required>
+              <option value="">-- Pilih Kategori --</option>
+              <option value="Food">Food</option>
+              <option value="Transport">Transport</option>
+              <option value="Fun">Fun</option>
+            </select>
+            <span class="form-group__error" id="item-category-error" hidden>Kategori wajib dipilih.</span>
+          </div>
+
+          <button type="submit" class="btn btn--primary btn--full">Tambah Transaksi</button>
+        </form>
+      </section>
+
+      <!-- ============================================================
+           SECTION 4: PIE CHART
+      ============================================================ -->
+      <section class="section section--chart" aria-label="Spending chart">
+        <h2 class="section__title">Distribusi Pengeluaran</h2>
+        <div class="chart-container">
+          <canvas id="spending-chart" width="300" height="300" aria-label="Pie chart distribusi pengeluaran per kategori" role="img"></canvas>
+          <!-- Pesan kosong: muncul jika belum ada transaksi -->
+          <p id="chart-empty" class="chart-empty">Belum ada data untuk ditampilkan.</p>
+        </div>
+        <!-- Legenda chart -->
+        <ul id="chart-legend" class="chart-legend" aria-label="Legenda chart">
+          <!-- Diisi oleh JavaScript -->
+        </ul>
+      </section>
+
+      <!-- ============================================================
+           SECTION 5: TRANSACTION LIST
+      ============================================================ -->
+      <section class="section section--transactions" aria-label="Transaction list">
+        <div class="transactions-header">
+          <h2 class="section__title">Daftar Transaksi</h2>
+
+          <!-- Sort control -->
+          <div class="sort-control">
+            <label for="sort-select" class="sort-control__label">Urutkan:</label>
+            <select id="sort-select" class="input input--select input--small">
+              <option value="default">Terbaru</option>
+              <option value="amount-asc">Amount: Terkecil</option>
+              <option value="amount-desc">Amount: Terbesar</option>
+              <option value="category">Kategori (A–Z)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Pesan kosong: muncul jika belum ada transaksi -->
+        <p id="transactions-empty" class="transactions-empty">Belum ada transaksi.</p>
+
+        <!-- List transaksi: diisi oleh JavaScript -->
+        <ul id="transaction-list" class="transaction-list">
+          <!-- Contoh struktur satu item (dihasilkan JS):
+          <li class="transaction-item" data-id="...">
+            <div class="transaction-item__info">
+              <span class="transaction-item__name">Nama Item</span>
+              <span class="transaction-item__category badge badge--food">Food</span>
+            </div>
+            <div class="transaction-item__right">
+              <span class="transaction-item__amount">Rp 25.000</span>
+              <button class="btn btn--delete" aria-label="Hapus transaksi">🗑️</button>
+            </div>
+          </li>
+          -->
+        </ul>
+      </section>
+
+    </main>
+
+    <footer class="footer">
+      <p class="footer__text">Expense & Budget Visualizer &copy; 2026</p>
+    </footer>
+
+    <!-- Chart.js v4.4.4 — library untuk membuat pie chart -->
+    <!-- Primary CDN: jsdelivr -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+    <!-- Fallback CDN: cdnjs (dijalankan hanya jika Chart dari jsdelivr gagal dimuat) -->
+    <script>
+      if (typeof Chart === 'undefined') {
+        var fallback = document.createElement('script');
+        fallback.src = 'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js';
+        document.head.appendChild(fallback);
+      }
+    </script>
+    <script src="js/app.js"></script>
+  </body>
+</html>

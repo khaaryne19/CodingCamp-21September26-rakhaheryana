@@ -1,0 +1,694 @@
+/* ================================================================
+   EXPENSE & BUDGET VISUALIZER — style.css
+   Struktur file:
+   1.  CSS Custom Properties (variabel tema)
+   2.  Reset & Base
+   3.  Typography
+   4.  Layout (header, main, footer)
+   5.  Button
+   6.  Input & Form
+   7.  Section umum
+   8.  Balance Card
+   9.  Spending Warning
+   10. Spending Limit Form
+   11. Transaction List
+   12. Sort Control
+   13. Pie Chart
+   14. Dark Mode
+   15. Responsive (tablet ke atas)
+================================================================ */
+
+
+/* ================================================================
+   1. CSS CUSTOM PROPERTIES (VARIABEL TEMA)
+   Semua warna, shadow, dan radius didefinisikan di sini.
+   Dark mode cukup meng-override variabel ini saja.
+================================================================ */
+:root {
+  /* Warna utama */
+  --color-primary:        #4f46e5; /* indigo */
+  --color-primary-hover:  #4338ca;
+  --color-danger:         #ef4444; /* merah untuk hapus & warning */
+  --color-danger-hover:   #dc2626;
+  --color-success:        #22c55e; /* hijau */
+  --color-secondary:      #6b7280; /* abu untuk tombol sekunder */
+  --color-secondary-hover:#4b5563;
+
+  /* Warna kategori (untuk badge & chart) */
+  --color-food:      #f97316; /* oranye */
+  --color-transport: #3b82f6; /* biru */
+  --color-fun:       #a855f7; /* ungu */
+
+  /* Background & surface */
+  --bg-page:    #f3f4f6;
+  --bg-card:    #ffffff;
+  --bg-input:   #ffffff;
+  --bg-header:  #4f46e5;
+
+  /* Teks */
+  --text-primary:   #111827;
+  --text-secondary: #6b7280;
+  --text-on-primary:#ffffff; /* teks di atas warna primary */
+
+  /* Border */
+  --border-color: #e5e7eb;
+  --border-radius: 8px;
+  --border-radius-lg: 12px;
+
+  /* Shadow */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.10);
+
+  /* Spacing */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+
+  /* Transisi */
+  --transition: 0.2s ease;
+}
+
+
+/* ================================================================
+   2. RESET & BASE
+================================================================ */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/*
+ * Atribut HTML [hidden] seharusnya menyembunyikan elemen via
+ * browser default style: [hidden] { display: none }.
+ * Namun aturan CSS eksplisit seperti "display: flex" bisa
+ * mengalahkan default tersebut karena specificity-nya lebih tinggi.
+ * Baris ini memastikan [hidden] SELALU menyembunyikan elemen,
+ * apapun aturan display yang ditetapkan class lain.
+ */
+[hidden] {
+  display: none !important;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+               "Helvetica Neue", Arial, sans-serif;
+  background-color: var(--bg-page);
+  color: var(--text-primary);
+  line-height: 1.5;
+  min-height: 100vh;
+  transition: background-color var(--transition), color var(--transition);
+}
+
+ul {
+  list-style: none;
+}
+
+button {
+  cursor: pointer;
+  font-family: inherit;
+}
+
+input, select {
+  font-family: inherit;
+}
+
+
+/* ================================================================
+   3. TYPOGRAPHY
+================================================================ */
+h1 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-on-primary);
+}
+
+h2 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+
+/* ================================================================
+   4. LAYOUT
+================================================================ */
+
+/* Header */
+.header {
+  background-color: var(--bg-header);
+  padding: var(--spacing-md) var(--spacing-lg);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: var(--shadow-md);
+}
+
+.header__title {
+  font-size: 1.1rem;
+}
+
+/* Main content area */
+.main {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: var(--spacing-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+/* Footer */
+.footer {
+  text-align: center;
+  padding: var(--spacing-lg) var(--spacing-md);
+  margin-top: var(--spacing-md);
+}
+
+.footer__text {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+
+/* ================================================================
+   5. BUTTON
+================================================================ */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px var(--spacing-md);
+  border: none;
+  border-radius: var(--border-radius);
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: background-color var(--transition), opacity var(--transition);
+}
+
+/* Tombol utama (submit form) */
+.btn--primary {
+  background-color: var(--color-primary);
+  color: var(--text-on-primary);
+}
+
+.btn--primary:hover {
+  background-color: var(--color-primary-hover);
+}
+
+/* Tombol sekunder (simpan limit) */
+.btn--secondary {
+  background-color: var(--color-secondary);
+  color: var(--text-on-primary);
+  white-space: nowrap;
+}
+
+.btn--secondary:hover {
+  background-color: var(--color-secondary-hover);
+}
+
+/* Tombol hapus transaksi */
+.btn--delete {
+  background-color: transparent;
+  color: var(--color-danger);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  font-size: 1rem;
+  border-radius: var(--border-radius);
+  border: 1px solid transparent;
+  flex-shrink: 0;
+}
+
+.btn--delete:hover {
+  background-color: #fee2e2;
+  border-color: var(--color-danger);
+}
+
+/* Tombol icon (theme toggle) */
+.btn--icon {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: var(--text-on-primary);
+  border: none;
+  border-radius: 50%;
+  width: 38px;
+  height: 38px;
+  font-size: 1.1rem;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.btn--icon:hover {
+  background-color: rgba(255, 255, 255, 0.35);
+}
+
+/* Tombol lebar penuh */
+.btn--full {
+  width: 100%;
+  padding: 12px;
+  font-size: 1rem;
+}
+
+
+/* ================================================================
+   6. INPUT & FORM
+================================================================ */
+.input {
+  width: 100%;
+  padding: 10px var(--spacing-md);
+  border: 1.5px solid var(--border-color);
+  border-radius: var(--border-radius);
+  background-color: var(--bg-input);
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  transition: border-color var(--transition), box-shadow var(--transition);
+  appearance: auto;
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+}
+
+/* Input dalam state error */
+.input--error {
+  border-color: var(--color-danger);
+}
+
+.input--error:focus {
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15);
+}
+
+/* Select kecil (untuk sort) */
+.input--small {
+  width: auto;
+  padding: 6px var(--spacing-sm);
+  font-size: 0.85rem;
+}
+
+/* Form group: label + input + pesan error */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.form-group__label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.form-group__error {
+  font-size: 0.8rem;
+  color: var(--color-danger);
+}
+
+/* Form transaksi */
+.transaction-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+
+/* ================================================================
+   7. SECTION UMUM
+   Setiap section adalah "kartu" dengan background putih.
+================================================================ */
+.section {
+  background-color: var(--bg-card);
+  border-radius: var(--border-radius-lg);
+  padding: var(--spacing-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.section__title {
+  margin-bottom: var(--spacing-md);
+  padding-bottom: var(--spacing-sm);
+  border-bottom: 1px solid var(--border-color);
+}
+
+
+/* ================================================================
+   8. BALANCE CARD
+================================================================ */
+.balance-card {
+  text-align: center;
+}
+
+.balance-card__label {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: var(--spacing-xs);
+}
+
+.balance-card__amount {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  letter-spacing: -0.02em;
+}
+
+/* State saat melebihi limit: angka berubah merah */
+.balance-card__amount--over-limit {
+  color: var(--color-danger);
+}
+
+
+/* ================================================================
+   9. SPENDING WARNING
+================================================================ */
+.balance-card__warning {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-md);
+  padding: var(--spacing-sm) var(--spacing-md);
+  background-color: #fee2e2;
+  border: 1px solid #fecaca;
+  border-radius: var(--border-radius);
+  color: var(--color-danger);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.warning__icon {
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+
+/* ================================================================
+   10. SPENDING LIMIT FORM
+================================================================ */
+.limit-form__label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-sm);
+}
+
+.limit-form__row {
+  display: flex;
+  gap: var(--spacing-sm);
+  align-items: center;
+}
+
+/* Input limit mengambil sisa ruang, tombol tidak menyusut */
+.limit-form__row .input {
+  flex: 1;
+}
+
+.limit-form__display {
+  margin-top: var(--spacing-sm);
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+.limit-form__display span {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+
+/* ================================================================
+   11. TRANSACTION LIST
+================================================================ */
+.transactions-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-md);
+  padding-bottom: var(--spacing-sm);
+  border-bottom: 1px solid var(--border-color);
+}
+
+/* Override margin section__title karena sudah ditangani transactions-header */
+.section--transactions .section__title {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.transactions-empty {
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  padding: var(--spacing-lg) 0;
+}
+
+/* Satu item transaksi */
+.transaction-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-md);
+  border-radius: var(--border-radius);
+  border: 1px solid var(--border-color);
+  margin-bottom: var(--spacing-sm);
+  background-color: var(--bg-card);
+  gap: var(--spacing-sm);
+  transition: box-shadow var(--transition);
+}
+
+.transaction-item:last-child {
+  margin-bottom: 0;
+}
+
+.transaction-item:hover {
+  box-shadow: var(--shadow-sm);
+}
+
+/* Sisi kiri: nama + badge kategori */
+.transaction-item__info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  min-width: 0; /* agar teks bisa terpotong jika terlalu panjang */
+}
+
+.transaction-item__name {
+  font-weight: 500;
+  font-size: 0.95rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Sisi kanan: amount + tombol hapus */
+.transaction-item__right {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  flex-shrink: 0;
+}
+
+.transaction-item__amount {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--color-primary);
+  white-space: nowrap;
+}
+
+/* Badge kategori */
+.badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  width: fit-content;
+}
+
+.badge--food {
+  background-color: #ffedd5;
+  color: #c2410c;
+}
+
+.badge--transport {
+  background-color: #dbeafe;
+  color: #1d4ed8;
+}
+
+.badge--fun {
+  background-color: #f3e8ff;
+  color: #7e22ce;
+}
+
+
+/* ================================================================
+   12. SORT CONTROL
+================================================================ */
+.sort-control {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.sort-control__label {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+
+/* ================================================================
+   13. PIE CHART
+================================================================ */
+.chart-container {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+}
+
+#spending-chart {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+.chart-empty {
+  position: absolute;
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+/* Legenda chart */
+.chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-md);
+  padding-top: var(--spacing-md);
+  border-top: 1px solid var(--border-color);
+}
+
+.chart-legend__item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  font-size: 0.85rem;
+}
+
+.chart-legend__color {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+.chart-legend__label {
+  color: var(--text-secondary);
+}
+
+.chart-legend__value {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+
+/* ================================================================
+   14. DARK MODE
+   Override variabel warna — semua komponen otomatis menyesuaikan.
+================================================================ */
+body.dark-mode {
+  --bg-page:        #0f172a;
+  --bg-card:        #1e293b;
+  --bg-input:       #334155;
+  --bg-header:      #1e293b;
+
+  --text-primary:   #f1f5f9;
+  --text-secondary: #94a3b8;
+  --text-on-primary:#f1f5f9;
+
+  --border-color:   #334155;
+
+  --color-primary:        #818cf8;
+  --color-primary-hover:  #6366f1;
+
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+/* Penyesuaian warna badge di dark mode agar tetap terbaca */
+body.dark-mode .badge--food {
+  background-color: #431407;
+  color: #fdba74;
+}
+
+body.dark-mode .badge--transport {
+  background-color: #172554;
+  color: #93c5fd;
+}
+
+body.dark-mode .badge--fun {
+  background-color: #3b0764;
+  color: #d8b4fe;
+}
+
+/* Warning banner di dark mode */
+body.dark-mode .balance-card__warning {
+  background-color: #450a0a;
+  border-color: #7f1d1d;
+}
+
+/* Tombol hapus hover di dark mode */
+body.dark-mode .btn--delete:hover {
+  background-color: #450a0a;
+}
+
+
+/* ================================================================
+   15. RESPONSIVE — tablet & desktop (min-width: 640px)
+================================================================ */
+@media (min-width: 640px) {
+  .header__title {
+    font-size: 1.25rem;
+  }
+
+  .main {
+    padding: var(--spacing-xl);
+    gap: var(--spacing-lg);
+  }
+
+  .balance-card__amount {
+    font-size: 2.5rem;
+  }
+
+  /* Tampilkan form dua kolom di layar lebih lebar */
+  .transaction-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-md);
+  }
+
+  /* Tombol submit tetap full-width, menempati 2 kolom */
+  .transaction-form .btn--full {
+    grid-column: 1 / -1;
+  }
+
+  /* Kategori menempati 2 kolom */
+  .transaction-form .form-group:nth-child(3) {
+    grid-column: 1 / -1;
+  }
+}
